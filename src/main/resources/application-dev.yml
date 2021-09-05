@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/docker?createDatabaseIfNotExist=true
+    username: root
+    password: r00t
+  jpa:
+    hibernate:
+      ddl-auto: update
+server:
+  port: 8080

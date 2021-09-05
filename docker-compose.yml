@@ -1,0 +1,35 @@
+version: '3'
+
+services: 
+  # APP
+  learndocker-app:
+    container_name: learndocker-app
+    build: 
+      context: ./
+      dockerfile: Dockerfile
+    environment: 
+      _JAVAR_OPTIONS: "-Xmx512m -Xms256m"
+      SPRING_PROFILES_ACTIVE: "docker"
+    ports: 
+      - 8080:8080
+    depends_on: 
+      learndocker-mysql:
+        condition: service_healthy
+  # MYSQL
+  learndocker-mysql:
+    container_name: learndocker-mysql
+    image: mysql:8.0.25
+    environment: 
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: docker
+      MYSQL_USER: docker
+      MYSQL_PASSWORD: docker
+    volumes: 
+      - ./mysql-data:/var/lib/mysql
+    command: mysqld --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    ports: 
+      - 3306:3306
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
